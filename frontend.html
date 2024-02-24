@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2D City Simulation</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    canvas {
+      border: 1px solid #000;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 text-center">2D City Simulation</h1>
+    <canvas id="cityCanvas" width="800" height="600"></canvas>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var canvas = document.getElementById('cityCanvas');
+      var ctx = canvas.getContext('2d');
+
+      // Define road dimensions
+      var roadWidth = 100;
+      var roadLength = 500;
+      var roadGap = 200;
+
+      // Draw roads
+      ctx.fillStyle = '#a9a9a9'; // Gray color for streets
+      ctx.fillRect(canvas.width / 2 - roadWidth / 2, 0, roadWidth, canvas.height); // Main road
+      ctx.fillRect(0, canvas.height / 2 - roadWidth / 2, canvas.width, roadWidth); // Side road 1
+      ctx.fillRect(0, canvas.height -100 - roadWidth / 2, canvas.width, roadWidth); // Side road 2
+
+      // Draw buildings
+      ctx.fillStyle = '#333'; // Dark gray color for buildings
+      ctx.fillRect(canvas.width / 2 - roadWidth / 2 - 80, 100, 80, 200); // Building 1
+      ctx.fillRect(canvas.width / 2 + roadWidth / 2, 50, 80, 250); // Building 2
+      ctx.fillRect(100, canvas.height / 2 - roadWidth / 2 - 150, 200, 150); // Building 3
+      ctx.fillRect(500, canvas.height / 2 - roadWidth / 2 - 100, 150, 100); // Building 4
+
+      // Simulate cars
+      var cars = [
+        { x: canvas.width / 2 - roadWidth + 10, y: 60, speed: 2.2, color: 'blue'},
+        { x: canvas.width / 2 - roadWidth + 10, y: 10, speed: 2 , color:'red'},
+        { x: canvas.width / 2 + roadWidth / 2 - 50, y: canvas.height - 30, speed: -2, color: 'red' }
+      ];
+
+      function drawCar(car) {
+        ctx.fillStyle = car.color;
+        ctx.fillRect(car.x, car.y, 30, 20);
+      }
+
+      function moveCar(car) {
+        car.y += car.speed;
+        if (car.y > canvas.height) {
+          car.y = -20; // Reset car position when it reaches the bottom of the canvas
+        } else if (car.y < -20) {
+          car.y = canvas.height; // Reset car position when it reaches the top of the canvas
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawRoads();
+        drawBuildings();
+        cars.forEach(function(car) {
+          moveCar(car);
+          drawCar(car);
+        });
+        requestAnimationFrame(animate);
+      }
+
+      function drawRoads() {
+        ctx.fillStyle = '#a9a9a9'; // Gray color for streets
+        ctx.fillRect(canvas.width / 2 - roadWidth , 0, roadWidth*1.5, canvas.height); // Main road
+        ctx.fillRect(0, canvas.height / 2 - roadWidth , canvas.width, roadWidth); // Side road 1
+        ctx.fillRect(0, canvas.height -100 - roadWidth / 2, canvas.width, roadWidth); // Side road 2
+      }
+
+      function drawBuildings() {
+        ctx.fillStyle = '#333'; // Dark gray color for buildings
+        ctx.fillRect(canvas.width / 2 - roadWidth - 260, canvas.height / 2 - roadWidth -200, 190, 170); // Building 1
+        ctx.fillRect(canvas.width / 2 + roadWidth / 2+50, 10, 180, 170); // Building 2
+        ctx.fillRect(canvas.width / 2 - roadWidth - 260, canvas.height  - roadWidth  - 180, 200, 100); // Building 3
+        // ctx.fillRect(500, canvas.height / 2 - roadWidth / 2 - 100, 150, 100); // Building 4
+      }
+
+      animate();
+    });
+  </script>
+</body>
+</html>
